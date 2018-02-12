@@ -9,13 +9,13 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.stereotype.Component;
 
 @Component
-public class DataStore {
-
-	@Bean(name="dataSourceOne")
+public class AnotherDataStore {
+	
+    @Bean(name="dataSourceTwo")
 	public DataSource dataSource() {
 		EmbeddedDatabaseBuilder builder = new EmbeddedDatabaseBuilder();
 		EmbeddedDatabase database = builder.setType(EmbeddedDatabaseType.HSQL)
-				.addScript("scripts/schema.sql").build();
+				.addScript("scripts/schemaTwo.sql").build();
 		return database;
 	}
 

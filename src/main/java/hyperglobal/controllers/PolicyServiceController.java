@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import hyperglobal.dataaccess.CreatePolicyService;
+import hyperglobal.services.CreatePolicyService;
 
 @RestController
 public class PolicyServiceController {
@@ -29,6 +29,7 @@ public class PolicyServiceController {
 	public @ResponseBody ResponseEntity<String> addPolicyRequest() {
 		log.info("start contoller ");
 		policyService.addPolicyData();		
+		policyService.queryData();
 	    return new ResponseEntity<String>("Policy Added", HttpStatus.OK);
 	}
 }

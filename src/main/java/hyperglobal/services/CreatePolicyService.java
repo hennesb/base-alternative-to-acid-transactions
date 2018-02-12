@@ -1,12 +1,16 @@
-package hyperglobal.dataaccess;
+package hyperglobal.services;
 
 import java.util.UUID;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+
+import hyperglobal.dataaccess.PolicyJDBCTemplate;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,7 +19,7 @@ import org.slf4j.LoggerFactory;
 public class CreatePolicyService {
 
 	private static final String insertPolicyStatement="insert into policy(transaction_ref, business_data) values(?,?)";
-	private static final String insertMessagesStatement="insert into messages1(transaction_ref, data_to_send) values(?,?)";
+	private static final String insertMessagesStatement="insert into messages(transaction_ref, data_to_send) values(?,?)";
 	
 	private static final String queryPolicyStatement="select transaction_ref from policy";
 	private static final String queryMessagesStatement="select transaction_ref from messages";
@@ -37,23 +41,24 @@ public class CreatePolicyService {
 	   	
 	}
 
+	
 	@Autowired
-	protected JdbcTemplate jdbcTemplate;
+    PolicyJDBCTemplate policyTemplate;
+	
+	public CreatePolicyService(){
 
-	public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
-		this.jdbcTemplate = jdbcTemplate;
 	}
 
 	@Transactional
 	public void addPolicyData(){
 		String transactionid = UUID.randomUUID().toString();
-		this.jdbcTemplate.update(insertPolicyStatement, transactionid, business_data);
-		this.jdbcTemplate.update(insertMessagesStatement, transactionid, message_data);
+		this.policyTemplate.jdbcTemplate().update(insertPolicyStatement, transactionid, business_data);
+		this.policyTemplate.jdbcTemplate().update(insertMessagesStatement, transactionid, message_data);
 		
 	}
 	
 	public void queryData(){
-		  jdbcTemplate.query(queryMessagesStatement, (resultSet, rowNum) -> new Results(resultSet.getString("transaction_ref"))
+		this.policyTemplate.jdbcTemplate().query(queryMessagesStatement, (resultSet, rowNum) -> new Results(resultSet.getString("transaction_ref"))
 			        ).forEach(result -> log.info("Value in messages table " + result.transRef));
 	}
 
